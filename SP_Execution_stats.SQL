@@ -37,3 +37,13 @@ CROSS APPLY sys.dm_exec_query_plan(qs.plan_handle) qp
 ORDER BY qs.total_logical_reads DESC -- logical reads
 -- ORDER BY qs.total_logical_writes DESC -- logical writes
 -- ORDER BY qs.total_worker_time DESC -- CPU time
+
+--Query to identify Stored procedure cache
+SELECT SCHEMA_NAME(SCHEMA_ID) SchemaName, name ProcedureName,
+last_execution_time LastExecuted,
+last_elapsed_time LastElapsedTime,
+execution_count ExecutionCount,
+cached_time CachedTime
+FROM sys.dm_exec_procedure_stats ps JOIN
+sys.objects o ON ps.object_id = o.object_id
+WHERE ps.database_id = DB_ID();
